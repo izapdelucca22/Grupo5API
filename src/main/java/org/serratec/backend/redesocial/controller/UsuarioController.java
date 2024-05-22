@@ -3,6 +3,8 @@ package org.serratec.backend.redesocial.controller;
 import org.serratec.backend.redesocial.model.Usuario;
 import org.serratec.backend.redesocial.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,13 @@ public class UsuarioController {
     public List<Usuario> getAllUsers() {
         return usuarioService.findAll();
     }
+    
+    // MOSTRA OS USUARIOS COM PAGINACAO
+    @GetMapping("/paged")
+    public Page<Usuario> getAllUsers(Pageable pageable) {
+        return usuarioService.findAll(pageable);
+    }
+
     
     // MOSTRA UM USUARIO ESPECIFICO PELO ID DO MESMO
     @GetMapping("/{id}")
