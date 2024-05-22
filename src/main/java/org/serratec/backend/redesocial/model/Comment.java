@@ -1,6 +1,6 @@
 package org.serratec.backend.redesocial.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "comment")
@@ -22,10 +24,12 @@ public class Comment {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Preencha o texto")
+    @Size(min = 1, max = 300, message = "O texto deve ter entre {min} e {max} caracteres")
     private String texto;
 
     @Column(nullable = false)
-    private Date dataCriacao;
+    private LocalDate dataCriacao;
 
     @ManyToOne
     @JoinColumn(name = "id_post", nullable = false)
@@ -47,11 +51,11 @@ public class Comment {
         this.texto = texto;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 

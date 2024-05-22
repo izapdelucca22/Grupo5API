@@ -22,6 +22,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "usuario")
@@ -33,20 +37,31 @@ public class Usuario implements UserDetails, Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_usuario")
 	private Long id;
-
+	
+	
 	@Column(nullable = false)
+	@NotBlank(message = "Preencha o nome")
+	@Size(min = 2, max = 50, message = "o nome da pessoa deve ter entre {min} e {max} letras")
 	private String nome;
 
 	@Column(nullable = false)
+	@NotBlank(message = "Preencha o sobrenome")
+	@Size(min = 2, max = 50, message = "O sobrenome da pessoa deve ter entre {min} e {max} letras")
 	private String sobrenome;
 
 	@Column(nullable = false, unique = true)
+	@NotBlank(message = "Preencha o email")
+	@Email(message = "Email inválido")
 	private String email;
 
 	@Column(nullable = false)
+	@NotBlank(message = "Preencha a senha")
+	@Size(min = 4)
 	private String senha;
 
 	@Column(nullable = false)
+	@NotBlank(message = "Preencha a data de nascimento")
+	@Past(message = "A data de nascimento deve ser no passado")
 	private Date dataNascimento;
 
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
