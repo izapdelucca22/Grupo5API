@@ -36,4 +36,9 @@ public class RelationshipService {
     public void deleteById(Long id) {
         relationshipRepository.deleteById(id);
     }
+    
+    public Relationship update(Relationship relationship) {
+		return relationshipRepository.save(relationship);
+	}
+
 }
