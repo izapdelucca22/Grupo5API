@@ -23,6 +23,11 @@ public class ControllerExceptionHandler  extends ResponseEntityExceptionHandler{
 		return ResponseEntity.notFound().build();
 	}
 	
+	@ExceptionHandler(NotFoundException.class)
+	protected ResponseEntity<Void> handleNotFoundException(NotFoundException ex){
+		return ResponseEntity.notFound().build();
+	}
+	
 	@ExceptionHandler(BadRequestException.class)
 	protected ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
 		return ResponseEntity.badRequest().body(ex.getMessage());
