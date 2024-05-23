@@ -42,23 +42,19 @@ public class SecurityConfig {
 			request.requestMatchers(HttpMethod.GET, "/login").permitAll();
 			request.requestMatchers("/swagger-ui/**").permitAll();
             request.requestMatchers("/v3/api-docs/**").permitAll();
-			request.requestMatchers(HttpMethod.GET, "/**").hasAnyAuthority("USER", "ADMIN");
-			request.requestMatchers(HttpMethod.DELETE, "/**").hasAnyAuthority("ADMIN");
+			request.requestMatchers(HttpMethod.GET, "/**").hasAnyRole("USER", "ADMIN");
+			request.requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN");
 			request.anyRequest().authenticated();
 			//COLOCAR AQUI AS PERMISSÕES PARA CADA ENDPOINT/ROLE |hasAnyAuthority(lista de roles)| hasAuthority(uma role)
 		}).sessionManagement(session ->{
 			session.sessionCreationPolicy(SessionCreationPolicy.STATELESS); 
 		});
 		
-//		http.addFilter(new JwtAuthenticationFilter(
-//				authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil));
 		JwtAuthenticationFilter jwtAuthenticationfilter = new JwtAuthenticationFilter(
 				authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil);
 		jwtAuthenticationfilter.setFilterProcessesUrl("/login");
 		
 		http.addFilter(jwtAuthenticationfilter); 
-		
-		
 		http.addFilter(new JwtAuthorizationFilter(
 				authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsService));
 		return http.build();
