@@ -49,4 +49,10 @@ public class PostController {
         postService.deleteById(id);
         return ResponseEntity.ok().build();
     }
+    
+    @GetMapping("/idade/{idade}")
+    public Page<Object[]> listarPostPorIdade(@PathVariable int idade, Pageable pageable){
+    	return postService.listarPostPorIdade(idade, pageable);
+    }
+    
 }

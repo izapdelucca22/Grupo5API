@@ -1,5 +1,6 @@
 package org.serratec.backend.redesocial.service;
 
+import org.serratec.backend.redesocial.exception.NotFoundException;
 import org.serratec.backend.redesocial.model.Post;
 import org.serratec.backend.redesocial.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,4 +37,14 @@ public class PostService {
     public void deleteById(Long id) {
         postRepository.deleteById(id);
     }
+    
+    //metodo para listar post por idade usando uma native query | TESTAR |
+    public Page<Object[]> listarPostPorIdade(int idade, Pageable pageable){
+    	 Page<Object[]> posts = postRepository.listarPostPorIdade(idade, pageable);
+    	 if(posts.isEmpty()) {
+    		 throw new NotFoundException("Nenhum post encontrado para a idade informada: " +idade);
+    	 }
+    	 return posts;
+    }
+    
 }
