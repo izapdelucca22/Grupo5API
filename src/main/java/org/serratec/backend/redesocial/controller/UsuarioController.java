@@ -33,17 +33,17 @@ public class UsuarioController {
 	@Autowired
 	private FotoService fotoService;
 
-	@GetMapping("/listarDTO")
-	public ResponseEntity<List<UsuarioDTO>> listar() {
-		List<UsuarioDTO> usuarios = usuarioService.listar();
-		return ResponseEntity.ok(usuarios);
-	}
-
-	@GetMapping("/{id}/DTO")
-	public ResponseEntity<UsuarioDTO> buscar(@PathVariable Long id) {
-		UsuarioDTO usuario = usuarioService.buscar(id);
-		return ResponseEntity.ok(usuario);
-	}
+//	@GetMapping("/listarDTO")
+//	public ResponseEntity<List<UsuarioDTO>> listar() {
+//		List<UsuarioDTO> usuarios = usuarioService.listar();
+//		return ResponseEntity.ok(usuarios);
+//	}
+//
+//	@GetMapping("/{id}/DTO")
+//	public ResponseEntity<UsuarioDTO> buscar(@PathVariable Long id) {
+//		UsuarioDTO usuario = usuarioService.buscar(id);
+//		return ResponseEntity.ok(usuario);
+//	}
 
 	@GetMapping("/{id}/foto")
 	public ResponseEntity<byte[]> buscarFoto(@PathVariable Long id) {
@@ -56,10 +56,7 @@ public class UsuarioController {
 		return new ResponseEntity<>(foto.getDados(), headers, HttpStatus.OK);
 	}
 
-	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-	public UsuarioDTO inserir(@RequestPart MultipartFile file, @RequestPart Usuario usuario) throws IOException {
-		return usuarioService.inserir(usuario, file);
-	}
+
 
 	//////////////////////
 

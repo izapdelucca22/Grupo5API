@@ -20,6 +20,8 @@ public class UsuarioDTO {
 	private String email;
 	
 	private String url;
+	
+	
 
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dataNascimento;

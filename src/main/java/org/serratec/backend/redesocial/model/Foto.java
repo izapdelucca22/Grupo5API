@@ -29,6 +29,8 @@ public class Foto {
 
 	private String nome;
 	
+	private String url;
+	
 	@OneToOne
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
@@ -36,54 +38,75 @@ public class Foto {
 	public Foto() {
 	}
 
-	public Foto(Long id, byte[] dados, String tipo, String nome, Usuario usuario) {
+
+	public Foto(Long id, byte[] dados, String tipo, String nome, String url, Usuario usuario) {
 		super();
 		this.id = id;
 		this.dados = dados;
 		this.tipo = tipo;
 		this.nome = nome;
+		this.url = url;
 		this.usuario = usuario;
 	}
+
 
 	public Long getId() {
 		return id;
 	}
 
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 
 	public byte[] getDados() {
 		return dados;
 	}
 
+
 	public void setDados(byte[] dados) {
 		this.dados = dados;
 	}
+
 
 	public String getTipo() {
 		return tipo;
 	}
 
+
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
+
 
 	public String getNome() {
 		return nome;
 	}
 
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
+
+	public String getUrl() {
+		return url;
+	}
+
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 
 	public Usuario getUsuario() {
 		return usuario;
 	}
 
+
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
 	
 }

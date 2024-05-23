@@ -1,6 +1,7 @@
 package org.serratec.backend.redesocial.service;
 
 import org.serratec.backend.redesocial.DTO.UsuarioDTO;
+import org.serratec.backend.redesocial.model.Foto;
 import org.serratec.backend.redesocial.model.Usuario;
 import org.serratec.backend.redesocial.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,46 +25,29 @@ public class UsuarioService {
 	@Autowired
 	private FotoService fotoService;
 	
-	public List<UsuarioDTO> listar() {
-		List<Usuario> usuarios = usuarioRepository.findAll();
-		
-		List<UsuarioDTO> usuariosDTO = new ArrayList<>();
-		
-		usuarios.forEach(f -> {
-			usuariosDTO.add(adicionarImagemUrl(f));
-		});
-		
-		return usuariosDTO;
-	}
+//	public List<UsuarioDTO> listar() {
+//		List<Usuario> usuarios = usuarioRepository.findAll();
+//		
+//		List<UsuarioDTO> usuariosDTO = new ArrayList<>();
+//		
+//		usuarios.forEach(f -> {
+//			usuariosDTO.add(adicionarImagemUrl(f));
+//		});
+//		
+//		return usuariosDTO;
+//	}
+//	
+//	public UsuarioDTO buscar(Long id) {
+//		Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
+//		return adicionarImagemUrl(usuarioOpt.get());
+//	}
+//	
+//	public UsuarioDTO inserir(Usuario usuario, MultipartFile file) throws IOException {
+//		usuario = usuarioRepository.save(usuario);
+//		fotoService.inserir(usuario, file);
+//		return adicionarImagemUrl(usuario);
+//	}
 	
-	public UsuarioDTO buscar(Long id) {
-		Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
-		return adicionarImagemUrl(usuarioOpt.get());
-	}
-	
-	public UsuarioDTO inserir(Usuario usuario, MultipartFile file) throws IOException {
-		usuario = usuarioRepository.save(usuario);
-		fotoService.inserir(usuario, file);
-		return adicionarImagemUrl(usuario);
-	}
-	
-	
-	public UsuarioDTO adicionarImagemUrl(Usuario usuario) {
-		URI uri = ServletUriComponentsBuilder
-				.fromCurrentContextPath()
-				.path("/usuarios/{id}/foto")
-				.buildAndExpand(usuario.getId())
-				.toUri();
-		
-		UsuarioDTO dto = new UsuarioDTO();
-		dto.setNome(usuario.getNome());
-		dto.setEmail(usuario.getEmail());
-		dto.setUrl(uri.toString());
-		dto.setDataNascimento(usuario.getDataNascimento());
-		//dto.setPerfis(usuario.getPerfis());
-		
-		return dto;
-	}
 	
 	//////////////////////
     
