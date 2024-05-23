@@ -3,42 +3,47 @@ package org.serratec.backend.redesocial.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class UsuarioRelationshipPK implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario usuario;
+    @Column(name = "id_usuario")
+    private Long usuarioId;
 
-    @ManyToOne
-    @JoinColumn(name = "id_relacao")
-    private Relationship relationship;
+    @Column(name = "id_relacao")
+    private Long relationshipId;
 
-    public Usuario getUsuario() {
-        return usuario;
+    public UsuarioRelationshipPK() {
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public UsuarioRelationshipPK(Long usuarioId, Long relationshipId) {
+        this.usuarioId = usuarioId;
+        this.relationshipId = relationshipId;
     }
 
-    public Relationship getRelationship() {
-        return relationship;
+    public Long getUsuarioId() {
+        return usuarioId;
     }
 
-    public void setRelationship(Relationship relationship) {
-        this.relationship = relationship;
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public Long getRelationshipId() {
+        return relationshipId;
+    }
+
+    public void setRelationshipId(Long relationshipId) {
+        this.relationshipId = relationshipId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(relationship, usuario);
+        return Objects.hash(usuarioId, relationshipId);
     }
 
     @Override
@@ -50,6 +55,6 @@ public class UsuarioRelationshipPK implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         UsuarioRelationshipPK other = (UsuarioRelationshipPK) obj;
-        return Objects.equals(relationship, other.relationship) && Objects.equals(usuario, other.usuario);
+        return Objects.equals(usuarioId, other.usuarioId) && Objects.equals(relationshipId, other.relationshipId);
     }
 }

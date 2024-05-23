@@ -20,13 +20,13 @@ public class UsuarioRelationship {
     private UsuarioRelationshipPK id = new UsuarioRelationshipPK();
 
     @ManyToOne
-    @MapsId("usuario")
+    @MapsId("usuarioId")
     @JoinColumn(name = "id_usuario")
     @JsonIgnore
     private Usuario usuario;
 
     @ManyToOne
-    @MapsId("relationship")
+    @MapsId("relationshipId")
     @JoinColumn(name = "id_relacao")
     @JsonIgnore
     private Relationship relationship;
@@ -41,7 +41,7 @@ public class UsuarioRelationship {
         this.usuario = usuario;
         this.relationship = relationship;
         this.dataCriacao = dataCriacao;
-        this.id = new UsuarioRelationshipPK();
+        this.id = new UsuarioRelationshipPK(usuario.getId(), relationship.getId());
     }
 
     public UsuarioRelationshipPK getId() {
