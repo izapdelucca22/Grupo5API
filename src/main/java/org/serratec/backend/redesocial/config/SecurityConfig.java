@@ -40,6 +40,8 @@ public class SecurityConfig {
 		.cors((cors) -> cors.configurationSource(corsConfigurationSource())) 
 		.httpBasic(Customizer.withDefaults()).authorizeHttpRequests(request ->{
 			request.requestMatchers(HttpMethod.GET, "/login").permitAll();
+			request.requestMatchers("/swagger-ui/**").permitAll();
+            request.requestMatchers("/v3/api-docs/**").permitAll();
 			request.requestMatchers(HttpMethod.GET, "/**").hasAnyAuthority("USER", "ADMIN");
 			request.requestMatchers(HttpMethod.DELETE, "/**").hasAnyAuthority("ADMIN");
 			request.anyRequest().authenticated();
@@ -54,7 +56,7 @@ public class SecurityConfig {
 				authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil);
 		jwtAuthenticationfilter.setFilterProcessesUrl("/login");
 		
-		http.addFilter(jwtAuthenticationfilter); //pqp
+		http.addFilter(jwtAuthenticationfilter); 
 		
 		
 		http.addFilter(new JwtAuthorizationFilter(
