@@ -2,6 +2,8 @@ package org.serratec.backend.redesocial.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -18,13 +20,15 @@ public class UsuarioRelationship {
     private UsuarioRelationshipPK id = new UsuarioRelationshipPK();
 
     @ManyToOne
-    @MapsId("usuarioId")
+    @MapsId("usuario")
     @JoinColumn(name = "id_usuario")
+    @JsonIgnore
     private Usuario usuario;
 
     @ManyToOne
-    @MapsId("relationshipId")
+    @MapsId("relationship")
     @JoinColumn(name = "id_relacao")
+    @JsonIgnore
     private Relationship relationship;
 
     @Column(name = "data_criacao")
@@ -37,7 +41,7 @@ public class UsuarioRelationship {
         this.usuario = usuario;
         this.relationship = relationship;
         this.dataCriacao = dataCriacao;
-        this.id = new UsuarioRelationshipPK(usuario.getId(), relationship.getId());
+        this.id = new UsuarioRelationshipPK();
     }
 
     public UsuarioRelationshipPK getId() {

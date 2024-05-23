@@ -3,6 +3,7 @@ package org.serratec.backend.redesocial.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -13,10 +14,12 @@ public class UsuarioPerfilPK implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
+	@JsonIgnore
 	private Usuario usuario;
 
 	@ManyToOne
 	@JoinColumn(name = "id_perfil")
+	@JsonIgnore
 	private Perfil perfil;
 
 	public Usuario getUsuario() {
@@ -51,5 +54,4 @@ public class UsuarioPerfilPK implements Serializable {
 		UsuarioPerfilPK other = (UsuarioPerfilPK) obj;
 		return Objects.equals(perfil, other.perfil) && Objects.equals(usuario, other.usuario);
 	}
-	
 }

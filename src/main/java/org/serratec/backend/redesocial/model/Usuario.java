@@ -13,6 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,12 +67,15 @@ public class Usuario implements UserDetails, Serializable {
 	private Date dataNascimento;
 
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonIgnore
 	private Set<UsuarioRelationship> usuarioRelacoes = new HashSet<>();
 
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Set<Post> posts = new HashSet<>();
 
 	@OneToMany(mappedBy = "id.usuario", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Set<UsuarioPerfil> usuarioPerfis = new HashSet<>();
 
 	public Usuario() {

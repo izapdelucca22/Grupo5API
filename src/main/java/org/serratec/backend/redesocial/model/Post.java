@@ -1,9 +1,11 @@
 package org.serratec.backend.redesocial.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,6 +19,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -30,18 +33,31 @@ public class Post {
 
     @Column(nullable = false)
     @NotBlank(message = "Preencha o conteúdo")
-	@Size(min = 1, max = 120, message = "O conteúdo deve ter entre {min} e {max} letras")
+    @Size(min = 1, max = 120, message = "O conteúdo deve ter entre {min} e {max} letras")
     private String conteudo;
 
     @Column(nullable = false)
-    private LocalDate dataCriacao;
+    @NotNull(message = "Data do post não pode ser nula")
+    private LocalDateTime dataPost;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario")
+    @JsonIgnore
     private Usuario usuario;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Comment> comments = new HashSet<>();
+    @JsonIgnore
+    private Set<Comment> comment = new HashSet<>();
+
+    public Post() {
+    }
+
+    public Post(Long id, String conteudo, LocalDateTime dataPost, Usuario usuario) {
+        this.id = id;
+        this.conteudo = conteudo;
+        this.dataPost = dataPost;
+        this.usuario = usuario;
+    }
 
     public Long getId() {
         return id;
@@ -59,12 +75,12 @@ public class Post {
         this.conteudo = conteudo;
     }
 
-    public LocalDate getDataCriacao() {
-        return dataCriacao;
+    public LocalDateTime getDataPost() {
+        return dataPost;
     }
 
-    public void setDataCriacao(LocalDate dataCriacao) {
-        this.dataCriacao = dataCriacao;
+    public void setDataPost(LocalDateTime dataPost) {
+        this.dataPost = dataPost;
     }
 
     public Usuario getUsuario() {
@@ -75,12 +91,12 @@ public class Post {
         this.usuario = usuario;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
+    public Set<Comment> getComment() {
+        return comment;
     }
 
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
+    public void setComment(Set<Comment> comment) {
+        this.comment = comment;
     }
 
     @Override

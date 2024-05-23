@@ -1,10 +1,13 @@
 package org.serratec.backend.redesocial.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,10 +15,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "commment")
 public class Comment {
 
     @Id
@@ -24,16 +28,28 @@ public class Comment {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank(message = "Preencha o texto")
-    @Size(min = 1, max = 300, message = "O texto deve ter entre {min} e {max} caracteres")
-    private String texto;
+    @NotBlank(message = "Preencha o conteúdo")
+    @Size(min = 1, max = 120, message = "O conteúdo deve ter entre {min} e {max} letras")
+    private String conteudo;
 
     @Column(nullable = false)
-    private LocalDate dataCriacao;
+    @NotNull(message = "Data do comentário não pode ser nula")
+    private LocalDateTime dataComentario;
 
-    @ManyToOne
-    @JoinColumn(name = "id_post", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_post")
+    @JsonIgnore
     private Post post;
+
+    public Comment() {
+    }
+
+    public Comment(Long id, String conteudo, LocalDateTime dataComentario, Post post) {
+        this.id = id;
+        this.conteudo = conteudo;
+        this.dataComentario = dataComentario;
+        this.post = post;
+    }
 
     public Long getId() {
         return id;
@@ -43,20 +59,20 @@ public class Comment {
         this.id = id;
     }
 
-    public String getTexto() {
-        return texto;
+    public String getConteudo() {
+        return conteudo;
     }
 
-    public void setTexto(String texto) {
-        this.texto = texto;
+    public void setConteudo(String conteudo) {
+        this.conteudo = conteudo;
     }
 
-    public LocalDate getDataCriacao() {
-        return dataCriacao;
+    public LocalDateTime getDataComentario() {
+        return dataComentario;
     }
 
-    public void setDataCriacao(LocalDate dataCriacao) {
-        this.dataCriacao = dataCriacao;
+    public void setDataComentario(LocalDateTime dataComentario) {
+        this.dataComentario = dataComentario;
     }
 
     public Post getPost() {
