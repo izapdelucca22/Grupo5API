@@ -45,6 +45,7 @@ public class SecurityConfig {
 			request.requestMatchers(HttpMethod.GET, "/**").hasAnyRole("USER", "ADMIN");
 			request.requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN");
 			request.requestMatchers(HttpMethod.POST, "/**").hasAnyRole("USER", "ADMIN");
+			request.requestMatchers(HttpMethod.PUT, "/**").hasAnyRole("USER", "ADMIN");
 			request.anyRequest().authenticated();
 			//COLOCAR AQUI AS PERMISSÕES PARA CADA ENDPOINT/ROLE |hasAnyAuthority(lista de roles)| hasAuthority(uma role)
 		}).sessionManagement(session ->{
