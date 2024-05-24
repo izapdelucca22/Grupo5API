@@ -21,6 +21,10 @@ public class UsuarioDTO {
 	
 	private String url;
 	
+	private String senha;
+
+	private String confirmaSenha;
+	
 	
 
 	@JsonFormat(pattern = "dd/MM/yyyy")
@@ -110,6 +114,21 @@ public class UsuarioDTO {
 
 	public void setPerfis(Set<Perfil> perfis) {
 		this.perfis = perfis;
+	}
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public String getConfirmaSenha() {
+		return confirmaSenha;
+	}
+
+	public void setConfirmaSenha(String confirmaSenha) {
+		this.confirmaSenha = confirmaSenha;
 	}
 
 

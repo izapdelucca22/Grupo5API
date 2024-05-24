@@ -1,81 +1,78 @@
 package org.serratec.backend.redesocial.service;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import org.serratec.backend.redesocial.DTO.UsuarioDTO;
-import org.serratec.backend.redesocial.model.Foto;
+import org.serratec.backend.redesocial.exception.EmailException;
+import org.serratec.backend.redesocial.exception.NotFoundException;
+import org.serratec.backend.redesocial.exception.SenhaException;
+import org.serratec.backend.redesocial.model.Perfil;
 import org.serratec.backend.redesocial.model.Usuario;
+import org.serratec.backend.redesocial.model.UsuarioPerfil;
 import org.serratec.backend.redesocial.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UsuarioService {
+
+    @Autowired
+    private PerfilService perfilService;
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-	@Autowired
-	private FotoService fotoService;
-	
-//	public List<UsuarioDTO> listar() {
-//		List<Usuario> usuarios = usuarioRepository.findAll();
-//		
-//		List<UsuarioDTO> usuariosDTO = new ArrayList<>();
-//		
-//		usuarios.forEach(f -> {
-//			usuariosDTO.add(adicionarImagemUrl(f));
-//		});
-//		
-//		return usuariosDTO;
-//	}
-//	
-//	public UsuarioDTO buscar(Long id) {
-//		Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
-//		return adicionarImagemUrl(usuarioOpt.get());
-//	}
-//	
-//	public UsuarioDTO inserir(Usuario usuario, MultipartFile file) throws IOException {
-//		usuario = usuarioRepository.save(usuario);
-//		fotoService.inserir(usuario, file);
-//		return adicionarImagemUrl(usuario);
-//	}
-	
-	
-	//////////////////////
-    
-    
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
-    }
-    
-    // Instancia para suportar paginacao
-    public Page<Usuario> findAll(Pageable pageable) {
-        return usuarioRepository.findAll(pageable);
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
+    public Page<UsuarioDTO> findAll(Pageable pageable) {
+        Page<Usuario> usuariosPage = usuarioRepository.findAll(pageable);
+        return usuariosPage.map(UsuarioDTO::new);
     }
 
-
-    public Optional<Usuario> findById(Long id) {
-        return usuarioRepository.findById(id);
+    public UsuarioDTO findById(Long id) throws NotFoundException {
+        Usuario usuario = usuarioRepository.findById(id)
+                                           .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+        return new UsuarioDTO(usuario);
     }
 
-    public Usuario save(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    @Transactional
+    public UsuarioDTO inserir(UsuarioDTO usuarioDTO) throws EmailException, SenhaException {
+        if (!usuarioDTO.getSenha().equals(usuarioDTO.getConfirmaSenha())) {
+            throw new SenhaException("Senha e Confirmação de Senha não coincidem");
+        }
+
+
+        Usuario usuario = new Usuario();
+        usuario.setNome(usuarioDTO.getNome());
+        usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setSenha(encoder.encode(usuarioDTO.getSenha()));
+
+        Set<UsuarioPerfil> usuarioPerfis = new HashSet<>();
+        for (Perfil perfil : usuarioDTO.getPerfis()) {
+            perfil = perfilService.buscar(perfil.getId());
+            usuarioPerfis.add(new UsuarioPerfil(usuario, perfil, LocalDate.now()));
+        }
+
+        usuario.setUsuarioPerfis(usuarioPerfis);
+
+        usuario = usuarioRepository.save(usuario);
+
+        return new UsuarioDTO(usuario);
     }
 
-    public void deleteById(Long id) {
-    	usuarioRepository.deleteById(id);
+    @Transactional
+    public void delete(Long id) throws NotFoundException {
+        if (!usuarioRepository.existsById(id)) {
+            throw new NotFoundException("Usuário não encontrado");
+        }
+        usuarioRepository.deleteById(id);
     }
-    
-    public Usuario update(Usuario usuario) {
-    	return usuarioRepository.save(usuario);
-    }
-
 }

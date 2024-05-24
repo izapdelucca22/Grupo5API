@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.serratec.backend.redesocial.DTO.UsuarioDTO;
+import org.serratec.backend.redesocial.exception.EmailException;
+import org.serratec.backend.redesocial.exception.SenhaException;
 import org.serratec.backend.redesocial.model.Foto;
 import org.serratec.backend.redesocial.model.Usuario;
 import org.serratec.backend.redesocial.service.FotoService;
 import org.serratec.backend.redesocial.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -60,54 +63,39 @@ public class UsuarioController {
 
 	//////////////////////
 
-	// MOSTRA TODOS OS USUARIOS
-	@GetMapping
-	@Operation(summary = "Lista todos os Usuários", description = "Essa requisição irá listar todos os usuários.")
-	public List<Usuario> getAllUsers() {
-		return usuarioService.findAll();
-	}
+    @GetMapping
+    public ResponseEntity<Page<UsuarioDTO>> getAllUsuarios(Pageable pageable) {
+        Page<UsuarioDTO> usuarios = usuarioService.findAll(pageable);
+        return ResponseEntity.ok(usuarios);
+    }
 
-	// MOSTRA OS USUARIOS COM PAGINACAO
-	@GetMapping("/paged")
-	@Operation(summary = "Lista os usuários por paginação", description = "Essa requisição irá listar os usuários separados por páginas.")
-	public Page<Usuario> getAllUsers(
-			@PageableDefault(sort = "id", direction = Sort.Direction.ASC, page = 0, size = 8) Pageable pageable) {
-		return usuarioService.findAll(pageable);
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable Long id) throws NotFoundException {
+        UsuarioDTO usuario = usuarioService.findById(id);
+        return ResponseEntity.ok(usuario);
+    }
 
-	// MOSTRA UM USUARIO ESPECIFICO PELO ID DO MESMO
-	@GetMapping("/{id}")
-	@Operation(summary = "Lista os usuários por id", description = "Essa requisição irá selecionar os usuários por id.")
-	public ResponseEntity<Usuario> getUserById(@PathVariable Long id) {
-		Optional<Usuario> user = usuarioService.findById(id);
-		return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-	}
+    @PostMapping
+    public ResponseEntity<UsuarioDTO> createUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) throws EmailException, SenhaException {
+        UsuarioDTO novoUsuario = usuarioService.inserir(usuarioDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> updateUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioDTO usuarioDTO) throws NotFoundException, EmailException, SenhaException {
+        UsuarioDTO usuarioAtualizado = usuarioService.inserir(usuarioDTO);
+        return ResponseEntity.ok(usuarioAtualizado);
+    }
 
-	// CRIA UM NOVO USUARIO
-	@PostMapping
-	@Operation(summary = "Salvar novo usuário", description = "Essa requisição irá salvar um novo usuário.")
-	public Usuario createUser(@RequestBody Usuario usuario) {
-		return usuarioService.save(usuario);
-	}
-
-	// DELETA UM USUARIO JA EXISTENTE PELO ID
-	@DeleteMapping("/{id}")
-	@Operation(summary = "Deletar um usuário", description = "Essa requisição irá deletar um usuário existente.")
-	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-		usuarioService.deleteById(id);
-		return ResponseEntity.ok().build();
-	}
-
-	// Atualiza um usuário existente
-	@PutMapping("/{id}")
-	@Operation(summary = "Atualizar um usuário", description = "Essa requisição irá atualizar um usuário existente.")
-	public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
-		if (!usuarioService.findById(id).isPresent()) {
-			return ResponseEntity.notFound().build();
-		}
-		usuario.setId(id);
-		usuario = usuarioService.save(usuario);
-		return ResponseEntity.ok(usuario);
-	}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) throws NotFoundException {
+        usuarioService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
+
+
+
+
+
