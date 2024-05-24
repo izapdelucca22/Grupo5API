@@ -2,16 +2,22 @@ package org.serratec.backend.redesocial.service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import org.serratec.backend.redesocial.DTO.UsuarioDTO;
+import org.serratec.backend.redesocial.DTO.UsuarioInserirDTO;
+import org.serratec.backend.redesocial.DTO.UsuarioRelationshipDTO;
 import org.serratec.backend.redesocial.exception.EmailException;
 import org.serratec.backend.redesocial.exception.NotFoundException;
 import org.serratec.backend.redesocial.exception.SenhaException;
 import org.serratec.backend.redesocial.model.Perfil;
+import org.serratec.backend.redesocial.model.Relationship;
 import org.serratec.backend.redesocial.model.Usuario;
 import org.serratec.backend.redesocial.model.UsuarioPerfil;
+import org.serratec.backend.redesocial.model.UsuarioRelationship;
+import org.serratec.backend.redesocial.model.UsuarioRelationshipPK;
+import org.serratec.backend.redesocial.repository.RelationshipRepository;
+import org.serratec.backend.redesocial.repository.UsuarioRelationshipRepository;
 import org.serratec.backend.redesocial.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +34,12 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private RelationshipRepository relationshipRepository;
+
+    @Autowired
+    private UsuarioRelationshipRepository usuarioRelationshipRepository;
 
     @Autowired
     private BCryptPasswordEncoder encoder;
@@ -44,19 +56,21 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioDTO inserir(UsuarioDTO usuarioDTO) throws EmailException, SenhaException {
-        if (!usuarioDTO.getSenha().equals(usuarioDTO.getConfirmaSenha())) {
+    public UsuarioInserirDTO inserir(UsuarioInserirDTO usuarioInserirDTO) throws EmailException, SenhaException {
+        if (!usuarioInserirDTO.getSenha().equals(usuarioInserirDTO.getConfirmaSenha())) {
             throw new SenhaException("Senha e Confirmação de Senha não coincidem");
         }
 
 
         Usuario usuario = new Usuario();
-        usuario.setNome(usuarioDTO.getNome());
-        usuario.setEmail(usuarioDTO.getEmail());
-        usuario.setSenha(encoder.encode(usuarioDTO.getSenha()));
+        usuario.setNome(usuarioInserirDTO.getNome());
+        usuario.setSobrenome(usuarioInserirDTO.getSobrenome());
+        usuario.setEmail(usuarioInserirDTO.getEmail());
+        usuario.setSenha(encoder.encode(usuarioInserirDTO.getSenha()));
+        usuario.setDataNascimento(usuarioInserirDTO.getDataNascimento());
 
         Set<UsuarioPerfil> usuarioPerfis = new HashSet<>();
-        for (Perfil perfil : usuarioDTO.getPerfis()) {
+        for (Perfil perfil : usuarioInserirDTO.getPerfis()) {
             perfil = perfilService.buscar(perfil.getId());
             usuarioPerfis.add(new UsuarioPerfil(usuario, perfil, LocalDate.now()));
         }
@@ -65,9 +79,25 @@ public class UsuarioService {
 
         usuario = usuarioRepository.save(usuario);
 
-        return new UsuarioDTO(usuario);
+        return new UsuarioInserirDTO(usuario);
     }
 
+    
+    @Transactional
+	public UsuarioInserirDTO atualizar(Long id, UsuarioInserirDTO usuarioInserirDTO) {
+		Usuario usuarioExistente = usuarioRepository.findById(id).orElseThrow(() -> new NotFoundException("Usuario não encontrado"));
+
+        usuarioExistente.setNome(usuarioInserirDTO.getNome());
+        usuarioExistente.setSobrenome(usuarioInserirDTO.getSobrenome());
+        usuarioExistente.setEmail(usuarioInserirDTO.getEmail());
+        usuarioExistente.setSenha(encoder.encode(usuarioInserirDTO.getSenha()));
+        usuarioExistente.setDataNascimento(usuarioInserirDTO.getDataNascimento());
+
+		Usuario usuarioAtualizado = usuarioRepository.save(usuarioExistente);
+		return new UsuarioInserirDTO(usuarioAtualizado);
+	}
+    
+    
     @Transactional
     public void delete(Long id) throws NotFoundException {
         if (!usuarioRepository.existsById(id)) {
@@ -75,4 +105,36 @@ public class UsuarioService {
         }
         usuarioRepository.deleteById(id);
     }
+    
+    @Transactional
+    public UsuarioRelationshipDTO criarRelacionamento(Long usuarioId, Long relationshipId) throws NotFoundException {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+        Relationship relationship = relationshipRepository.findById(relationshipId)
+                .orElseThrow(() -> new NotFoundException("Relacionamento não encontrado"));
+
+        UsuarioRelationship usuarioRelationship = new UsuarioRelationship(usuario, relationship, LocalDate.now());
+        usuarioRelationshipRepository.save(usuarioRelationship);
+
+        return new UsuarioRelationshipDTO(usuarioRelationship);
+    }
+
+    public UsuarioRelationshipDTO buscarRelacionamento(Long usuarioId, Long relationshipId) throws NotFoundException {
+        UsuarioRelationship usuarioRelationship = usuarioRelationshipRepository.findById(
+                new UsuarioRelationshipPK(usuarioId, relationshipId))
+                .orElseThrow(() -> new NotFoundException("Relacionamento não encontrado"));
+
+        return new UsuarioRelationshipDTO(usuarioRelationship);
+    }
+
+    @Transactional
+    public void deletarRelacionamento(Long usuarioId, Long relationshipId) throws NotFoundException {
+        UsuarioRelationship usuarioRelationship = usuarioRelationshipRepository.findById(
+                new UsuarioRelationshipPK(usuarioId, relationshipId))
+                .orElseThrow(() -> new NotFoundException("Relacionamento não encontrado"));
+
+        usuarioRelationshipRepository.delete(usuarioRelationship);
+    }
+	
 }

@@ -33,6 +33,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		try {
+			System.out.println("aaa");
 			LoginDTO login = new ObjectMapper().readValue(request.getInputStream(), LoginDTO.class);
 			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
 					login.getUsername(), login.getPassword(), new ArrayList<>());

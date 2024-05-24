@@ -14,6 +14,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -33,11 +35,23 @@ public class Relationship {
 
 	@OneToMany(mappedBy = "relationship", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
-	private Set<UsuarioRelationship> usuarioPerfis = new HashSet<>();
+	private Set<UsuarioRelationship> usuarioRelationship = new HashSet<>();
 
-	public Relationship(Long id, LocalDateTime dataInicioSeguimento) {
+	@ManyToOne
+	@JoinColumn(name = "follower_id", nullable = false)
+	private Usuario follower;
+
+	@ManyToOne
+	@JoinColumn(name = "followed_id", nullable = false)
+	private Usuario followed;
+
+	public Relationship() {}
+
+	public Relationship(Long id, LocalDateTime dataInicioSeguimento, Usuario follower, Usuario followed) {
 		this.id = id;
 		this.dataInicioSeguimento = dataInicioSeguimento;
+		this.follower = follower;
+		this.followed = followed;
 	}
 
 	public Long getId() {
@@ -53,15 +67,31 @@ public class Relationship {
 	}
 
 	public void setDataInicioSeguimento(LocalDateTime dataInicioSeguimento) {
-		this.dataInicioSeguimento = LocalDateTime.now();
+		this.dataInicioSeguimento = dataInicioSeguimento;
 	}
 
 	public Set<UsuarioRelationship> getUsuarioPerfis() {
-		return usuarioPerfis;
+		return usuarioRelationship;
 	}
 
-	public void setUsuarioPerfis(Set<UsuarioRelationship> usuarioPerfis) {
-		this.usuarioPerfis = usuarioPerfis;
+	public void setUsuarioPerfis(Set<UsuarioRelationship> usuarioRelationship) {
+		this.usuarioRelationship = usuarioRelationship;
+	}
+
+	public Usuario getFollower() {
+		return follower;
+	}
+
+	public void setFollower(Usuario follower) {
+		this.follower = follower;
+	}
+
+	public Usuario getFollowed() {
+		return followed;
+	}
+
+	public void setFollowed(Usuario followed) {
+		this.followed = followed;
 	}
 
 	@Override

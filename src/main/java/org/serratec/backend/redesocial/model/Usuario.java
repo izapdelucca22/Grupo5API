@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -26,6 +27,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
@@ -39,7 +41,6 @@ public class Usuario implements UserDetails, Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_usuario")
 	private Long id;
-	
 	
 	@Column(nullable = false)
 	@NotBlank(message = "Preencha o nome")
@@ -62,8 +63,9 @@ public class Usuario implements UserDetails, Serializable {
 	private String senha;
 
 	@Column(nullable = false)
-	@NotBlank(message = "Preencha a data de nascimento")
+	@NotNull(message = "Preencha a data de nascimento")
 	@Past(message = "A data de nascimento deve ser no passado")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dataNascimento;
 
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -77,6 +79,14 @@ public class Usuario implements UserDetails, Serializable {
 	@OneToMany(mappedBy = "id.usuario", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<UsuarioPerfil> usuarioPerfis = new HashSet<>();
+
+	@OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	//@JsonIgnore
+	private Set<Relationship> followers = new HashSet<>();
+
+	@OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	//@JsonIgnore
+	private Set<Relationship> followings = new HashSet<>();
 
 	public Usuario() {
 	}
@@ -160,6 +170,22 @@ public class Usuario implements UserDetails, Serializable {
 
 	public void setUsuarioPerfis(Set<UsuarioPerfil> usuarioPerfis) {
 		this.usuarioPerfis = usuarioPerfis;
+	}
+
+	public Set<Relationship> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(Set<Relationship> followers) {
+		this.followers = followers;
+	}
+
+	public Set<Relationship> getFollowings() {
+		return followings;
+	}
+
+	public void setFollowings(Set<Relationship> followings) {
+		this.followings = followings;
 	}
 
 	@Override

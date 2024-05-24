@@ -9,127 +9,123 @@ import org.serratec.backend.redesocial.model.Usuario;
 import org.serratec.backend.redesocial.model.UsuarioPerfil;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 
 public class UsuarioDTO {
 
-	private Long id;
+    private Long id;
 
-	private String nome;
+    @NotEmpty(message = "Nome é obrigatório")
+    private String nome;
 
-	private String email;
-	
-	private String url;
-	
-	private String senha;
+    @Email(message = "Email deve ser válido")
+    @NotEmpty(message = "Email é obrigatório")
+    private String email;
 
-	private String confirmaSenha;
-	
-	
+    private String url;
 
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date dataNascimento;
+    @JsonIgnore
+    private String senha;
 
-	private Set<Perfil> perfis;
+    @JsonIgnore
+    private String confirmaSenha;
 
-	public UsuarioDTO() {
-	}
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    @NotNull(message = "Data de nascimento é obrigatória")
+    @Past(message = "Data de nascimento deve ser no passado")
+    private Date dataNascimento;
 
-	
-	public UsuarioDTO(Long id, String nome, String email, String url, Date dataNascimento) {
-		super();
-		this.id = id;
-		this.nome = nome;
-		this.email = email;
-		this.url = url;
-		this.dataNascimento = dataNascimento;
-	}
+    private Set<Perfil> perfis;
 
-	public UsuarioDTO(Usuario usuario) {
-		this.id = usuario.getId();
-		this.nome = usuario.getNome();
-		this.email = usuario.getEmail();
-		this.dataNascimento = usuario.getDataNascimento();
-		this.perfis = new HashSet<>();
-		for (UsuarioPerfil usuarioPerfil: usuario.getUsuarioPerfis()) {
-			this.perfis.add(usuarioPerfil.getId().getPerfil());
-		}
-	}
+    public UsuarioDTO() {}
 
+    public UsuarioDTO(Long id, String nome, String email, String url, Date dataNascimento) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.url = url;
+        this.dataNascimento = dataNascimento;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public UsuarioDTO(Usuario usuario) {
+        this.id = usuario.getId();
+        this.nome = usuario.getNome();
+        this.email = usuario.getEmail();
+        this.dataNascimento = usuario.getDataNascimento();
+        this.perfis = new HashSet<>();
+        for (UsuarioPerfil usuarioPerfil : usuario.getUsuarioPerfis()) {
+            this.perfis.add(usuarioPerfil.getId().getPerfil());
+        }
+    }
 
+    // Getters and setters
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getNome() {
-		return nome;
-	}
+    public String getNome() {
+        return nome;
+    }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getUrl() {
+        return url;
+    }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public Date getDataNascimento() {
+        return dataNascimento;
+    }
 
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public Set<Perfil> getPerfis() {
+        return perfis;
+    }
 
+    public void setPerfis(Set<Perfil> perfis) {
+        this.perfis = perfis;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public String getSenha() {
+        return senha;
+    }
 
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
-	public Date getDataNascimento() {
-		return dataNascimento;
-	}
+    public String getConfirmaSenha() {
+        return confirmaSenha;
+    }
 
-
-	public void setDataNascimento(Date dataNascimento) {
-		this.dataNascimento = dataNascimento;
-	}
-
-
-	public Set<Perfil> getPerfis() {
-		return perfis;
-	}
-
-
-	public void setPerfis(Set<Perfil> perfis) {
-		this.perfis = perfis;
-	}
-	public String getSenha() {
-		return senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
-
-	public String getConfirmaSenha() {
-		return confirmaSenha;
-	}
-
-	public void setConfirmaSenha(String confirmaSenha) {
-		this.confirmaSenha = confirmaSenha;
-	}
-
-
+    public void setConfirmaSenha(String confirmaSenha) {
+        this.confirmaSenha = confirmaSenha;
+    }
 }
