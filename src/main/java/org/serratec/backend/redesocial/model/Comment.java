@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -28,7 +27,7 @@ public class Comment {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank(message = "Preencha o conteúdo")
+    @NotNull(message = "Preencha o conteúdo")
     @Size(min = 1, max = 120, message = "O conteúdo deve ter entre {min} e {max} letras")
     private String conteudo;
 
