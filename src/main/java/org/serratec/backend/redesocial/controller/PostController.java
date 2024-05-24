@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,6 +64,13 @@ public class PostController {
 	public ResponseEntity<PostDTO> atualizar(@Valid @RequestBody PostDTO postDTO,  @PathVariable Long id){
 		PostDTO postDTOAtualizado = postService.atualizar(id, postDTO);
 		return ResponseEntity.ok(postDTOAtualizado);
+	}
+	
+	@DeleteMapping("/{id}")
+	@Operation(summary = "Deletar post", description = "Essa requisição irá deletar um post existente pelo seu ID.")
+	public ResponseEntity<Void> deletar(@PathVariable Long id){
+		postService.deletar(id);
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/idade/{idade}")

@@ -2,6 +2,7 @@ package org.serratec.backend.redesocial.service;
 
 import org.serratec.backend.redesocial.DTO.PostDTO;
 import org.serratec.backend.redesocial.exception.NotFoundException;
+import org.serratec.backend.redesocial.exception.UnauthorizedException;
 import org.serratec.backend.redesocial.model.Post;
 import org.serratec.backend.redesocial.model.Usuario;
 import org.serratec.backend.redesocial.repository.PostRepository;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -39,14 +42,22 @@ public class PostService {
 		return new PostDTO(post);
 	}
 
+	@Transactional
 	public PostDTO inserir(PostDTO postDTO) {
 
+		// Obtém o email de usuário do contexto de segurança
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		// Carrega os detalhes do usuário usando o serviço de detalhes do usuário
 		UserDetails details = detailsImp.loadUserByUsername(username);
 
-		if (details instanceof Usuario) {
+		// Verifica se o usuário logado é uma instância de Usuario | se naõ encontrar o usuario lança a exception
+		if (!(details instanceof Usuario)) {
+			throw new UnauthorizedException("Usuário não encontrado");
+		}
+			
+		// Faz o cast seguro para Usuario
 			Usuario usuario = (Usuario) details;
-
+			
 			Post post = new Post();
 			post.setConteudo(postDTO.getConteudo());
 			post.setDataPost(LocalDateTime.now());
@@ -54,13 +65,11 @@ public class PostService {
 
 			Post postSalvo = postRepository.save(post);
 			return new PostDTO(postSalvo);
-		} else {
-			throw new RuntimeException("Usuário logado não encontrado");
-		}
 	}
 
+	@Transactional
 	public PostDTO atualizar(Long id, PostDTO postDTO) {
-		Post postExistente = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post não encontrdo"));
+		Post postExistente = postRepository.findById(id).orElseThrow(() -> new NotFoundException("Post não encontrdo"));
 
 		postExistente.setConteudo(postDTO.getConteudo());
 		postExistente.setDataPost(LocalDateTime.now());
@@ -69,6 +78,12 @@ public class PostService {
 
 		Post postAtualizado = postRepository.save(postExistente);
 		return new PostDTO(postAtualizado);
+	}
+	
+	@Transactional
+	public void deletar(Long id) {
+		Post postExistente = postRepository.findById(id).orElseThrow(() -> new NotFoundException("Post não encontrdo"));
+		postRepository.delete(postExistente);
 	}
 
 	// metodo para listar post por idade usando uma native query | TESTAR |
@@ -79,14 +94,5 @@ public class PostService {
 		}
 		return posts;
 	}
-
-//	private String getUsernameLogado() {
-//		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		if (principal instanceof UserDetails) {
-//			return ((UserDetails) principal).getUsername();
-//		} else {
-//			throw new RuntimeException("Nenhum usuário logado");
-//		}
-//	}
 
 }

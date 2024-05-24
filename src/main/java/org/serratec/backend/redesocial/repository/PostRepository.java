@@ -1,5 +1,7 @@
 package org.serratec.backend.redesocial.repository;
 
+import java.util.Optional;
+
 import org.serratec.backend.redesocial.model.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	Page<Post> findAll(Pageable pageable);
 	
+    @Query("SELECT p FROM Post p WHERE p.id = :postId AND p.usuario.id = :usuarioId")
+    Optional<Post> findByIdAndUsuarioId(Long postId, Long usuarioId);
 	
 	@Query(value = "SELECT u.nome AS nome_usuario, "+
             "DATE_PART('year', age(now(), u.data_nascimento)) AS idade, " +
