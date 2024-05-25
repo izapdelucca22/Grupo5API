@@ -1,5 +1,7 @@
 package org.serratec.backend.redesocial.controller;
 
+import java.util.List;
+
 import org.serratec.backend.redesocial.DTO.UsuarioDTO;
 import org.serratec.backend.redesocial.DTO.UsuarioInserirDTO;
 import org.serratec.backend.redesocial.DTO.UsuarioRelationshipDTO;
@@ -35,18 +37,6 @@ public class UsuarioController {
 	@Autowired
 	private FotoService fotoService;
 
-//	@GetMapping("/listarDTO")
-//	public ResponseEntity<List<UsuarioDTO>> listar() {
-//		List<UsuarioDTO> usuarios = usuarioService.listar();
-//		return ResponseEntity.ok(usuarios);
-//	}
-//
-//	@GetMapping("/{id}/DTO")
-//	public ResponseEntity<UsuarioDTO> buscar(@PathVariable Long id) {
-//		UsuarioDTO usuario = usuarioService.buscar(id);
-//		return ResponseEntity.ok(usuario);
-//	}
-
 	@GetMapping("/{id}/foto")
 	public ResponseEntity<byte[]> buscarFoto(@PathVariable Long id) {
 		Foto foto = fotoService.buscarPorIdUsuario(id);
@@ -58,64 +48,67 @@ public class UsuarioController {
 		return new ResponseEntity<>(foto.getDados(), headers, HttpStatus.OK);
 	}
 
+	@GetMapping
+	public ResponseEntity<Page<UsuarioDTO>> getAllUsuarios(Pageable pageable) {
+		Page<UsuarioDTO> usuarios = usuarioService.findAll(pageable);
+		return ResponseEntity.ok(usuarios);
+	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable Long id) throws NotFoundException {
+		UsuarioDTO usuario = usuarioService.findById(id);
+		return ResponseEntity.ok(usuario);
+	}
 
-	//////////////////////
+	@PostMapping
+	public ResponseEntity<UsuarioInserirDTO> createUsuario(@Valid @RequestBody UsuarioInserirDTO usuarioInserirDTO)
+			throws EmailException, SenhaException {
+		UsuarioInserirDTO novoUsuario = usuarioService.inserir(usuarioInserirDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+	}
 
-    @GetMapping
-    public ResponseEntity<Page<UsuarioDTO>> getAllUsuarios(Pageable pageable) {
-        Page<UsuarioDTO> usuarios = usuarioService.findAll(pageable);
-        return ResponseEntity.ok(usuarios);
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<UsuarioInserirDTO> updateUsuario(@PathVariable Long id,
+			@Valid @RequestBody UsuarioInserirDTO usuarioInserirDTO)
+			throws NotFoundException, EmailException, SenhaException {
+		UsuarioInserirDTO usuarioAtualizado = usuarioService.atualizar(id, usuarioInserirDTO);
+		return ResponseEntity.ok(usuarioAtualizado);
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable Long id) throws NotFoundException {
-        UsuarioDTO usuario = usuarioService.findById(id);
-        return ResponseEntity.ok(usuario);
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) throws NotFoundException {
+		usuarioService.delete(id);
+		return ResponseEntity.noContent().build();
+	}
 
-    @PostMapping
-    public ResponseEntity<UsuarioInserirDTO> createUsuario(@Valid @RequestBody UsuarioInserirDTO usuarioInserirDTO) throws EmailException, SenhaException {
-        UsuarioInserirDTO novoUsuario = usuarioService.inserir(usuarioInserirDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioInserirDTO> updateUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioInserirDTO usuarioInserirDTO) throws NotFoundException, EmailException, SenhaException {
-        UsuarioInserirDTO usuarioAtualizado = usuarioService.atualizar(id, usuarioInserirDTO);
-        return ResponseEntity.ok(usuarioAtualizado);
-    }
+	// Endpoints relacionamento entre usuarios
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) throws NotFoundException {
-        usuarioService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+	// Endpoint para seguir um usuário
+	@PostMapping("/{usuarioId}/follow/{followedId}")
+	public ResponseEntity<Void> seguirUsuario(@PathVariable Long usuarioId, @PathVariable Long followedId)
+			throws NotFoundException {
+		usuarioService.seguirUsuario(usuarioId, followedId);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
 
-    
-    //Endpoints relacionamento entre usuarios
-    
-    @PostMapping("/{usuarioId}/relacionamentos/{relationshipId}")
-    public ResponseEntity<UsuarioRelationshipDTO> criarRelacionamento(
-            @PathVariable Long usuarioId,
-            @PathVariable Long relationshipId) throws NotFoundException {
-        UsuarioRelationshipDTO usuarioRelationshipDTO = usuarioService.criarRelacionamento(usuarioId, relationshipId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRelationshipDTO);
-    }
+	// Endpoint para deixar de seguir um usuário
+	@DeleteMapping("/{usuarioId}/unfollow/{followedId}")
+	public ResponseEntity<Void> deixarDeSeguirUsuario(@PathVariable Long usuarioId, @PathVariable Long followedId)
+			throws NotFoundException {
+		usuarioService.deixarDeSeguirUsuario(usuarioId, followedId);
+		return ResponseEntity.noContent().build();
+	}
 
-    @GetMapping("/{usuarioId}/relacionamentos/{relationshipId}")
-    public ResponseEntity<UsuarioRelationshipDTO> buscarRelacionamento(
-            @PathVariable Long usuarioId,
-            @PathVariable Long relationshipId) throws NotFoundException {
-        UsuarioRelationshipDTO usuarioRelationshipDTO = usuarioService.buscarRelacionamento(usuarioId, relationshipId);
-        return ResponseEntity.ok(usuarioRelationshipDTO);
-    }
+	@GetMapping("/{id}/seguidos")
+	public ResponseEntity<List<UsuarioRelationshipDTO>> UsuariosSeguidos(@PathVariable Long id) {
+		List<UsuarioRelationshipDTO> usuariosSeguidosDTO = usuarioService.seguindo(id);
+		return new ResponseEntity<>(usuariosSeguidosDTO, HttpStatus.OK);
+	}
 
-    @DeleteMapping("/{usuarioId}/relacionamentos/{relationshipId}")
-    public ResponseEntity<Void> deletarRelacionamento(
-            @PathVariable Long usuarioId,
-            @PathVariable Long relationshipId) throws NotFoundException {
-        usuarioService.deletarRelacionamento(usuarioId, relationshipId);
-        return ResponseEntity.noContent().build();
-    }
+	@GetMapping("/{id}/seguidores")
+	public ResponseEntity<List<UsuarioRelationshipDTO>> UsuariosSeguidores(@PathVariable Long id) {
+		List<UsuarioRelationshipDTO> usuariosSeguidosDTO = usuarioService.seguidores(id);
+		return new ResponseEntity<>(usuariosSeguidosDTO, HttpStatus.OK);
+	}
+
 }

@@ -1,43 +1,40 @@
 package org.serratec.backend.redesocial.DTO;
 
-import java.time.LocalDate;
-
-import org.serratec.backend.redesocial.model.UsuarioRelationship;
-
 public class UsuarioRelationshipDTO {
-    private Long usuarioId;
-    private Long relationshipId;
-    private LocalDate dataCriacao;
 
-    public UsuarioRelationshipDTO() {}
+	private Long id;
+	private String nome;
+	private String sobrenome;
 
-    public UsuarioRelationshipDTO(UsuarioRelationship usuarioRelationship) {
-        this.usuarioId = usuarioRelationship.getUsuario().getId();
-        this.relationshipId = usuarioRelationship.getRelationship().getId();
-        this.dataCriacao = usuarioRelationship.getDataCriacao();
-    }
-
-	public Long getUsuarioId() {
-		return usuarioId;
+	public UsuarioRelationshipDTO(Long id, String nome, String sobrenome) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.sobrenome = sobrenome;
 	}
 
-	public void setUsuarioId(Long usuarioId) {
-		this.usuarioId = usuarioId;
+	public Long getId() {
+		return id;
 	}
 
-	public Long getRelationshipId() {
-		return relationshipId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setRelationshipId(Long relationshipId) {
-		this.relationshipId = relationshipId;
+	public String getNome() {
+		return nome;
 	}
 
-	public LocalDate getDataCriacao() {
-		return dataCriacao;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public void setDataCriacao(LocalDate dataCriacao) {
-		this.dataCriacao = dataCriacao;
-	} 
+	public String getSobrenome() {
+		return sobrenome;
+	}
+
+	public void setSobrenome(String sobrenome) {
+		this.sobrenome = sobrenome;
+	}
+
 }

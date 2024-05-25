@@ -80,12 +80,12 @@ public class Usuario implements UserDetails, Serializable {
 	@JsonIgnore
 	private Set<UsuarioPerfil> usuarioPerfis = new HashSet<>();
 
-	@OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	//@JsonIgnore
+	@OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	@JsonIgnore
 	private Set<Relationship> followers = new HashSet<>();
 
-	@OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	//@JsonIgnore
+	@OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	@JsonIgnore
 	private Set<Relationship> followings = new HashSet<>();
 
 	public Usuario() {
