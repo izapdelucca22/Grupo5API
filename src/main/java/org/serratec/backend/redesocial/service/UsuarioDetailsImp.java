@@ -1,4 +1,4 @@
-package org.serratec.backend.redesocial.services;
+package org.serratec.backend.redesocial.service;
 
 import org.serratec.backend.redesocial.model.Usuario;
 import org.serratec.backend.redesocial.repository.UsuarioRepository;
