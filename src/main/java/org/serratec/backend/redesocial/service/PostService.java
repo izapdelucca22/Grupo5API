@@ -6,7 +6,6 @@ import org.serratec.backend.redesocial.exception.UnauthorizedException;
 import org.serratec.backend.redesocial.model.Post;
 import org.serratec.backend.redesocial.model.Usuario;
 import org.serratec.backend.redesocial.repository.PostRepository;
-import org.serratec.backend.redesocial.services.UsuarioDetailsImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
