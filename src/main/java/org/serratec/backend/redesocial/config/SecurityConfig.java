@@ -43,7 +43,7 @@ public class SecurityConfig {
 			request.requestMatchers("/swagger-ui/**").permitAll();
             request.requestMatchers("/v3/api-docs/**").permitAll();
 			request.requestMatchers(HttpMethod.GET, "/**").hasAnyRole("USER", "ADMIN");
-			request.requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN");
+			request.requestMatchers(HttpMethod.DELETE, "/**").hasAnyRole("USER", "ADMIN");
 			request.requestMatchers(HttpMethod.POST, "/**").hasAnyRole("USER", "ADMIN");
 			request.requestMatchers(HttpMethod.PUT, "/**").hasAnyRole("USER", "ADMIN");
 			request.anyRequest().authenticated();
