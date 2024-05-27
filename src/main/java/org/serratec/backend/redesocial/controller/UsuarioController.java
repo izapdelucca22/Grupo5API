@@ -1,10 +1,7 @@
 package org.serratec.backend.redesocial.controller;
 
-import java.util.List;
-
 import org.serratec.backend.redesocial.DTO.UsuarioDTO;
 import org.serratec.backend.redesocial.DTO.UsuarioInserirDTO;
-import org.serratec.backend.redesocial.DTO.UsuarioRelationshipDTO;
 import org.serratec.backend.redesocial.exception.EmailException;
 import org.serratec.backend.redesocial.exception.SenhaException;
 import org.serratec.backend.redesocial.model.Foto;
@@ -80,35 +77,4 @@ public class UsuarioController {
 		usuarioService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
-	// Endpoints relacionamento entre usuarios
-
-	// Endpoint para seguir um usuário
-	@PostMapping("/{usuarioId}/follow/{followedId}")
-	public ResponseEntity<Void> seguirUsuario(@PathVariable Long usuarioId, @PathVariable Long followedId)
-			throws NotFoundException {
-		usuarioService.seguirUsuario(usuarioId, followedId);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
-	}
-
-	// Endpoint para deixar de seguir um usuário
-	@DeleteMapping("/{usuarioId}/unfollow/{followedId}")
-	public ResponseEntity<Void> deixarDeSeguirUsuario(@PathVariable Long usuarioId, @PathVariable Long followedId)
-			throws NotFoundException {
-		usuarioService.deixarDeSeguirUsuario(usuarioId, followedId);
-		return ResponseEntity.noContent().build();
-	}
-
-	@GetMapping("/{id}/seguidos")
-	public ResponseEntity<List<UsuarioRelationshipDTO>> UsuariosSeguidos(@PathVariable Long id) {
-		List<UsuarioRelationshipDTO> usuariosSeguidosDTO = usuarioService.seguindo(id);
-		return new ResponseEntity<>(usuariosSeguidosDTO, HttpStatus.OK);
-	}
-
-	@GetMapping("/{id}/seguidores")
-	public ResponseEntity<List<UsuarioRelationshipDTO>> UsuariosSeguidores(@PathVariable Long id) {
-		List<UsuarioRelationshipDTO> usuariosSeguidosDTO = usuarioService.seguidores(id);
-		return new ResponseEntity<>(usuariosSeguidosDTO, HttpStatus.OK);
-	}
-
 }
