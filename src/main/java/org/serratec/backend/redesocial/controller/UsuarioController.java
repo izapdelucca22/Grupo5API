@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 @RestController
@@ -35,6 +36,7 @@ public class UsuarioController {
 	private FotoService fotoService;
 
 	@GetMapping("/{id}/foto")
+	@Operation(summary = "Busca imagem po id", description = "Essa requisição irá buscar imagem por id.")
 	public ResponseEntity<byte[]> buscarFoto(@PathVariable Long id) {
 		Foto foto = fotoService.buscarPorIdUsuario(id);
 
@@ -46,18 +48,21 @@ public class UsuarioController {
 	}
 
 	@GetMapping
+	@Operation(summary = "Lista usuaraios", description = "Essa requisição irá listar usuarios.")
 	public ResponseEntity<Page<UsuarioDTO>> getAllUsuarios(Pageable pageable) {
 		Page<UsuarioDTO> usuarios = usuarioService.findAll(pageable);
 		return ResponseEntity.ok(usuarios);
 	}
 
 	@GetMapping("/{id}")
+	@Operation(summary = "Busca usuario po id", description = "Essa requisição irá buscar usuario por id.")
 	public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable Long id) throws NotFoundException {
 		UsuarioDTO usuario = usuarioService.findById(id);
 		return ResponseEntity.ok(usuario);
 	}
 
 	@PostMapping
+	@Operation(summary = "Insere um usuario ao banco", description = "Essa requisição irá criar um usuario novo")
 	public ResponseEntity<UsuarioInserirDTO> createUsuario(@Valid @RequestBody UsuarioInserirDTO usuarioInserirDTO)
 			throws EmailException, SenhaException {
 		UsuarioInserirDTO novoUsuario = usuarioService.inserir(usuarioInserirDTO);
@@ -65,6 +70,7 @@ public class UsuarioController {
 	}
 
 	@PutMapping("/{id}")
+	@Operation(summary = "Atualiza um usuario por id", description = "Essa requisição irá atualizar um usuario por id")
 	public ResponseEntity<UsuarioInserirDTO> updateUsuario(@PathVariable Long id,
 			@Valid @RequestBody UsuarioInserirDTO usuarioInserirDTO)
 			throws NotFoundException, EmailException, SenhaException {
@@ -73,6 +79,7 @@ public class UsuarioController {
 	}
 
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Deleta um usuario por id", description = "Essa requisição irá deletar um usuario por id")
 	public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) throws NotFoundException {
 		usuarioService.delete(id);
 		return ResponseEntity.noContent().build();
