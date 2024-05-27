@@ -39,10 +39,34 @@
 -[Conteúdo ensinado por Alberto Paz (O melhor que temos!)]
 
 #### <img src="https://www.meupositivo.com.br/doseujeito/wp-content/uploads/2017/08/Bateria-01.gif" width="50"> endpoints 🔋
-- Post: 
-- Get all: 
-- FindByID: 
-- delete: 
-- Put: 
-    
-- Leia-se: altere {id} pelo número do id que você quer mexer
+
+## Login
+- Get - localhost:8080/login
+
+## Usuario
+- Get all: localhost:8080/usuarios
+- Get FindByID: localhost:8080/usuarios/3
+- Post: localhost:8080/usuarios
+- Put: localhost:8080/usuarios/3
+- delete: localhost:8080/usuarios/3
+
+## Post
+- Get - localhost:8080/posts
+- Get byId - localhost:8080/posts/1
+- Get byIdade - localhost:8080/posts/idade/24
+- Post - localhost:8080/posts
+- Put -  localhost:8080/posts/1
+- Delete - localhost:8080/posts/1
+
+## Comment
+- Get All - localhost:8080/comments
+- Get byId - localhost:8080/comments/3
+- Post - localhost:8080/comments/posts/1
+- Put - localhost:8080/comments/7
+- Delete - localhost:8080/comments/7
+
+## Relationship
+- Get - localhost:8080/relationships/seguidos
+- Get - localhost:8080/relationships/seguidores
+- Post - localhost:8080/relationships/follow/4
+- Delete - localhost:8080/relationships/unfollow/4
