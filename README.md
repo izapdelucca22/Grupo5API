@@ -44,29 +44,21 @@
 - Get - localhost:8080/login
 
 ## Usuario
-- Get all: localhost:8080/usuarios
-- Get FindByID: localhost:8080/usuarios/3
-- Post: localhost:8080/usuarios
-- Put: localhost:8080/usuarios/3
-- delete: localhost:8080/usuarios/3
+<div align="center">
+<img src="https://github.com/izapdelucca/Grupo5API/assets/123001323/8bcaa6c9-a7c2-4f64-a5a2-3d5f99405540" alt="Tabela Swagger Usuario"/>
+</div>
 
 ## Post
-- Get - localhost:8080/posts
-- Get byId - localhost:8080/posts/1
-- Get byIdade - localhost:8080/posts/idade/24
-- Post - localhost:8080/posts
-- Put -  localhost:8080/posts/1
-- Delete - localhost:8080/posts/1
+<div align="center">
+<img src="https://github.com/izapdelucca/Grupo5API/assets/123001323/93f259b8-b5c4-4d18-bbe1-acb4bbde38cf" alt="Tabela Swagger Post"/>
+</div>
 
 ## Comment
-- Get All - localhost:8080/comments
-- Get byId - localhost:8080/comments/3
-- Post - localhost:8080/comments/posts/1
-- Put - localhost:8080/comments/7
-- Delete - localhost:8080/comments/7
+<div align="center">
+<img src="https://github.com/izapdelucca/Grupo5API/assets/123001323/8203d72c-b850-4aff-b6e2-243d8ece71ca" alt="Tabela Swagger Comment"/>
+</div>
 
 ## Relationship
-- Get - localhost:8080/relationships/seguidos
-- Get - localhost:8080/relationships/seguidores
-- Post - localhost:8080/relationships/follow/4
-- Delete - localhost:8080/relationships/unfollow/4
+<div align="center">
+<img src="https://github.com/izapdelucca/Grupo5API/assets/123001323/9faaadc5-6e3a-44d4-99b5-8a237879a021" alt="Tabela Swagger Relationship"/>
+</div>
