@@ -40,6 +40,7 @@ public class SecurityConfig {
 		.cors((cors) -> cors.configurationSource(corsConfigurationSource())) 
 		.httpBasic(Customizer.withDefaults()).authorizeHttpRequests(request ->{
 			request.requestMatchers(HttpMethod.GET, "/login").permitAll();
+			request.requestMatchers(HttpMethod.POST, "//usuarios").permitAll();
 			request.requestMatchers("/swagger-ui/**").permitAll();
             request.requestMatchers("/v3/api-docs/**").permitAll();
 			request.requestMatchers(HttpMethod.GET, "/**").hasAnyRole("USER", "ADMIN");
