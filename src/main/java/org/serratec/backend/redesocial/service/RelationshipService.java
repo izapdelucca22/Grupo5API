@@ -48,6 +48,12 @@ public class RelationshipService {
 		
 		Usuario followed = usuarioRepository.findById(followedId)
 				.orElseThrow(() -> new NotFoundException("Usuário seguido não encontrado"));
+		
+	    
+		relationshipRepository.findByFollowerAndFollowed(usuarioAutenticado, followed)
+	    .ifPresent(existingRelationship -> {
+	        throw new IllegalArgumentException("O relacionamento já existe");
+	    });	
 
 		Relationship relationship = new Relationship();
 		relationship.setFollower(usuarioAutenticado);
