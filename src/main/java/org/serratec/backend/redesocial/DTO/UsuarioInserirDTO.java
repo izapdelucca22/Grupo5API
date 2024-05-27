@@ -51,7 +51,7 @@ public class UsuarioInserirDTO {
     public UsuarioInserirDTO() {}
 
     public UsuarioInserirDTO(Long id, String nome, String email, String url, Date dataNascimento) {
-    	this.id = id;
+    	this.setId(id);
         this.nome = nome;
         this.email = email;
         this.url = url;
@@ -59,7 +59,7 @@ public class UsuarioInserirDTO {
     }
 
     public UsuarioInserirDTO(Usuario usuario) {
-        this.id = usuario.getId();
+        this.setId(usuario.getId());
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
         this.dataNascimento = usuario.getDataNascimento();
@@ -133,6 +133,14 @@ public class UsuarioInserirDTO {
     
 	public String getSobrenome() {
 		return sobrenome;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }
 
