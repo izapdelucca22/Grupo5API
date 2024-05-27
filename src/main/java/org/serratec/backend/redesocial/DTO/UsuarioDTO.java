@@ -30,9 +30,11 @@ public class UsuarioDTO {
     private String url;
 
     @JsonIgnore
+    @NotEmpty(message = "Senha é obrigatória")
     private String senha;
 
     @JsonIgnore
+    @NotEmpty(message = "confirmaSenha tem que ser igual a senha")
     private String confirmaSenha;
 
     @JsonFormat(pattern = "dd/MM/yyyy")

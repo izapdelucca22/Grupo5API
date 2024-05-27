@@ -14,6 +14,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 
 public class UsuarioInserirDTO {
 	
@@ -32,9 +33,12 @@ public class UsuarioInserirDTO {
     private String url;
 
 
+    @NotEmpty(message = "Senha é obrigatória")
+    @Size(min = 4, max = 16)
     private String senha;
 
-
+    @NotEmpty(message = "confirmaSenha é obrigatória")
+    @Size(min = 4, max = 16)
     private String confirmaSenha;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
